@@ -1,7 +1,9 @@
 
 
 
+import 'package:atom_app/Client.dart';
 import 'package:atom_app/IPAddresProvider.dart';
+import 'package:atom_app/Package.dart';
 import 'package:atom_app/color.dart';
 import 'package:atom_app/widgets/GuageWidget.dart';
 import 'package:flutter/material.dart';
@@ -11,18 +13,22 @@ import 'package:cupertino_tabbar/cupertino_tabbar.dart' as CupertinoTabBar;
 
 
 class CommunicationPage extends StatefulWidget {
-  final String socket;
-  final int port;
-  const CommunicationPage({super.key, required, required this.socket, required this.port });
+  
+  const CommunicationPage({super.key, required});
   @override
   State<CommunicationPage> createState() => _CommunicationPageState();
 }
 
 class _CommunicationPageState extends State<CommunicationPage> {
-  int _SelectedTab = 1;
+  int _SelectedTab = 0;
   int GetSlectefTab() => _SelectedTab;
   final String _ButtonState = "Connect";
-  
+  String ?socket = "";
+  final int port = 12345;
+
+  AtomClient? client;
+  List<SensorData> _SensorData = <SensorData>[];
+
 
   @override
   Widget build(BuildContext context,) {
@@ -48,14 +54,16 @@ class _CommunicationPageState extends State<CommunicationPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      const Column(
+                      Column(
                         children: [
-                          Text("ATOM",
+                          const Text("ATOM",
                               style: TextStyle(
                                   fontSize: 40,
                                   fontWeight: FontWeight.bold,
                                   color: col_grey)),
-                          Text("Sensor Center of the robot",
+                          if(sharedData.ipAddresProvider.isNotEmpty) Text("Selected IP: ${sharedData.ipAddresProvider} 🔗",
+                              style: const TextStyle(fontSize: 15, color: col_grey))
+                              else const Text("Please open Discover Tab 🔍",
                               style: TextStyle(fontSize: 15, color: col_grey)),
                         ],
                       ),
@@ -74,6 +82,10 @@ class _CommunicationPageState extends State<CommunicationPage> {
                         button_text_size: 15,
                         onClick: () {
                           print("Button clicked");
+                          socket = sharedData.ipAddresProvider;
+                          client = AtomClient(host: socket!, port: port);
+                          client!.connect(onMessageRecived) ;
+                          
                         })
                          
                         
@@ -132,7 +144,7 @@ class _CommunicationPageState extends State<CommunicationPage> {
                 //Switch between Sensor and Controll widgets when is control is a emty container
                 if(_SelectedTab == 0) Expanded(
                   child: GridView.builder(
-                    itemCount: 6,
+                    itemCount: _SensorData.length,
                     padding: const EdgeInsets.all(5),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
@@ -140,7 +152,7 @@ class _CommunicationPageState extends State<CommunicationPage> {
                      itemBuilder: (context,index){
                          
                           
-                          return GuageWidget(name: 'name', value: index, type: index,);
+                          return GuageWidget(name: _SensorData[index].name, value: _SensorData[index].value.toInt(), type: index,);
 
                      }
                      
@@ -171,5 +183,29 @@ class _CommunicationPageState extends State<CommunicationPage> {
 
       ),
     );
+  }
+
+
+
+
+  void onMessageRecived(String message) {
+    print("Messsage fom comunication widget" + message);
+
+
+    //parse message using the package class and example "1:Temperature:25" 
+    //int id , String name , double value
+    
+    List<String> _message = message.split(":");
+    // _SensorData.add(SensorData(id: int.parse(_message[0]), name: _message[1], value: double.parse(_message[2])));
+    //Add onli if the id is not in the list if exist update value
+    
+    setState(() {
+      if(_SensorData.where((element) => element.id == int.parse(_message[0])).isEmpty){
+      _SensorData.add(SensorData(id: int.parse(_message[0]), name: _message[1], value: double.parse(_message[2])));
+    }else{
+      _SensorData[_SensorData.indexWhere((element) => element.id == int.parse(_message[0]))].value = double.parse(_message[2]);
+    }
+    });
+
   }
 }

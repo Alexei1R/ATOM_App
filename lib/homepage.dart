@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
   //list of widgets
   final List<Widget> _widgetOptions = <Widget>[
     const DiscoverScreen(),
-    const CommunicationPage(socket: "", port: 12345,),
+    const CommunicationPage(),
   ];
 
   @override

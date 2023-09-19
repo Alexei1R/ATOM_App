@@ -1,5 +1,6 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:atom_app/color.dart';
-import 'package:atom_app/pages/CommunicationPage.dart';
 import 'package:flutter/material.dart';
 import 'package:fancy_button_flutter/fancy_button_flutter.dart';
 import 'package:lan_scanner/lan_scanner.dart';
@@ -79,6 +80,7 @@ class _DiscoverWidgetState extends State<DiscoverWidget> {
                             _ButtonState = "Rescan";
                             _InfoState = "Found ${hosts.length} devices👌";
                             progress = 1.0;
+                            _hosts.clear();
                             _hosts.addAll(hosts);
                           });
                           print("Scan complete");
@@ -107,6 +109,8 @@ class _DiscoverWidgetState extends State<DiscoverWidget> {
                         trailing: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(108, 255, 255, 255),
+                            foregroundColor: Colors.white,
+                            
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -146,4 +150,8 @@ class _DiscoverWidgetState extends State<DiscoverWidget> {
       ),
     );
   }
+
+  
+
+
 }

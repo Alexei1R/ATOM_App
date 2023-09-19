@@ -1,29 +1,36 @@
 import 'dart:io';
 
-class Cient {
+class AtomClient {
   final String host;
   final int port;
+  String serverResponse = '';
   Socket? _socket;
   bool _connected = false;
 
-  Cient({required this.host, required this.port});
+  AtomClient({required this.host, required this.port});
 
-  Future<void> connect() async {
+
+
+  
+  Future<void> connect(Function? messageFnc) async {
     try {
       _socket = await Socket.connect(host, port);
       _connected = true;
       print('Connected to the server');
-      _setupListeners();
+      _setupListeners(messageFnc);
     } catch (e) {
       print('Error: $e');
     }
   }
-
-  void _setupListeners() {
+//create a function with lamda that will be called when a message is recived
+  void _setupListeners(Function? messageFnc) {
     _socket!.listen(
       (data) {
-        final serverResponse = String.fromCharCodes(data);
+        serverResponse = String.fromCharCodes(data);
         print('Received from server: $serverResponse');
+        if (messageFnc != null) {
+          messageFnc(serverResponse);
+        }
       },
       onError: (error) {
         print('Error: $error');
@@ -53,4 +60,7 @@ class Cient {
       print('Not connected to the server');
     }
   }
+
+
+  
 }
