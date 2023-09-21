@@ -56,6 +56,7 @@ dev_dependencies:
   google_nav_bar:
   provider: ^6.0.5
   cupertino_tabbar: ^2.0.0
+  flutter_joystick: ^0.0.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -6,10 +6,12 @@ import 'package:atom_app/IPAddresProvider.dart';
 import 'package:atom_app/Package.dart';
 import 'package:atom_app/color.dart';
 import 'package:atom_app/widgets/GuageWidget.dart';
+import 'package:atom_app/widgets/JoyStickWidger..dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fancy_button_flutter/fancy_button_flutter.dart';
 import 'package:cupertino_tabbar/cupertino_tabbar.dart' as CupertinoTabBar;
+import 'package:flutter_joystick/flutter_joystick.dart';
 
 
 class CommunicationPage extends StatefulWidget {
@@ -162,7 +164,22 @@ class _CommunicationPageState extends State<CommunicationPage> {
                      
                      )
                 )
-                else const Expanded(child: Center(child: Text("Controll", style: TextStyle(color: Colors.white),))),
+                else Expanded(
+                  
+
+                  child:  Container(
+
+
+                      child: JoystickExample(onChangeCallback: (x, y) {
+                        print("x: $x, y: $y");
+                        client!.sendMessage("${x.toStringAsFixed(2)}:${y.toStringAsFixed(2)}");
+                      },)
+
+
+
+                  ),
+                
+                ),
 
 
 
