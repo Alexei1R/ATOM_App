@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
-
 void main() {
   runApp(
     ChangeNotifierProvider(
@@ -14,11 +13,6 @@ void main() {
     ),
   );
 }
-
-
-
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -29,7 +23,7 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
-  ]);
+    ]);
     return MaterialApp(
       title: 'ATOM',
       theme: ThemeData(useMaterial3: true),
